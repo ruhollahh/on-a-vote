@@ -2,6 +2,7 @@ import type { AppProps } from "next/app";
 import type { AppRouter } from "@/backend/routes/_app";
 import { ChakraProvider } from "@chakra-ui/react";
 import { withTRPC } from "@trpc/next";
+import superjson from "superjson";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -20,6 +21,7 @@ export default withTRPC<AppRouter>({
 
     return {
       url: "/api/trpc",
+      transformer: superjson,
       /**
        * @link https://react-query.tanstack.com/reference/QueryClient
        */

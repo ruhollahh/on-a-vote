@@ -2,13 +2,14 @@ import { trpc } from "@/backend/utils/trpc";
 import type { NextPage } from "next";
 
 const Home: NextPage = () => {
-  const hello = trpc.useQuery(["hello.sayit", { text: "client" }]);
-  if (!hello.data) {
+  const { data, isLoading } = trpc.useQuery(["question.getAll"]);
+  if (isLoading) {
     return <div>Loading...</div>;
   }
+  console.log(data);
   return (
     <div>
-      <p>{hello.data.greeting}</p>
+      <p>got it</p>
     </div>
   );
 };
