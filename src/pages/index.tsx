@@ -1,5 +1,6 @@
 import { trpc } from "@/backend/utils/trpc";
 import type { NextPage } from "next";
+import Link from "next/link";
 import { useState } from "react";
 
 const QuestionForm = () => {
@@ -39,7 +40,9 @@ const Home: NextPage = () => {
   return (
     <div>
       {data?.map((q) => (
-        <p key={q.id}>{q.question}</p>
+        <div key={q.id}>
+          <Link href={`/questions/${q.id}`}>{q.question}</Link>
+        </div>
       ))}
       <QuestionForm />
     </div>
