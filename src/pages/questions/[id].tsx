@@ -8,7 +8,17 @@ const QuestionContent: React.FC<{ id: string }> = ({ id }) => {
   if (!data) {
     return <div>no questions found</div>;
   }
-  return <div>{data?.question}</div>;
+  console.log(data);
+  return (
+    <div>
+      <div>{data.body}</div>
+      <div>
+        {data.options.map((option) => (
+          <span key={option.id}>{option.body}</span>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 const QuestionPage = () => {

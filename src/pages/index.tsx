@@ -17,7 +17,7 @@ const QuestionForm = () => {
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        mutate({ question });
+        mutate({ body: question, options: ["a", "b", "c", "d"] });
       }}
     >
       <label htmlFor="question">New Question:</label>
@@ -41,7 +41,7 @@ const Home: NextPage = () => {
     <div>
       {data?.map((q) => (
         <div key={q.id}>
-          <Link href={`/questions/${q.id}`}>{q.question}</Link>
+          <Link href={`/questions/${q.id}`}>{q.body}</Link>
         </div>
       ))}
       <QuestionForm />
