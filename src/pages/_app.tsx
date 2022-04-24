@@ -3,11 +3,14 @@ import type { AppRouter } from "@/backend/routes/_app";
 import { ChakraProvider } from "@chakra-ui/react";
 import { withTRPC } from "@trpc/next";
 import superjson from "superjson";
+import { SessionProvider } from "next-auth/react";
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <ChakraProvider>
-      <Component {...pageProps} />
+      <SessionProvider session={session}>
+        <Component {...pageProps} />
+      </SessionProvider>
     </ChakraProvider>
   );
 }

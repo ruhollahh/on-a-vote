@@ -1,6 +1,7 @@
 import { trpc } from "@/backend/utils/trpc";
 import type { NextPage } from "next";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
 
 const QuestionForm = () => {
@@ -34,7 +35,9 @@ const QuestionForm = () => {
 
 const Home: NextPage = () => {
   const { data, isLoading } = trpc.useQuery(["question.getAll"]);
-  if (isLoading) {
+  const { data: session, status } = useSession();
+  console.log(session);
+  if (isLoading || status === "loading") {
     return <div>Loading...</div>;
   }
   return (
@@ -45,6 +48,13 @@ const Home: NextPage = () => {
         </div>
       ))}
       <QuestionForm />
+      <div>
+        {status === "authenticated" ? (
+          <p>Signed in as {session?.user?.email}</p>
+        ) : (
+          <Link href="/api/auth/signin">Sign in</Link>
+        )}
+      </div>
     </div>
   );
 };
