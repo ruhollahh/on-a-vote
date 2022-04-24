@@ -12,6 +12,24 @@ function MyApp({ Component, pageProps }: AppProps) {
   );
 }
 
+function getBaseUrl() {
+  if (typeof window !== "undefined") {
+    return "";
+  }
+  // reference for vercel.com
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+
+  // // reference for render.com
+  if (process.env.RENDER_INTERNAL_HOSTNAME) {
+    return `http://${process.env.RENDER_INTERNAL_HOSTNAME}:${process.env.PORT}`;
+  }
+
+  // assume localhost
+  return `http://localhost:${process.env.PORT ?? 3000}`;
+}
+
 export default withTRPC<AppRouter>({
   config({ ctx }) {
     /**
@@ -20,7 +38,7 @@ export default withTRPC<AppRouter>({
      */
 
     return {
-      url: "/api/trpc",
+      url: `${getBaseUrl()}/api/trpc`,
       transformer: superjson,
       /**
        * @link https://react-query.tanstack.com/reference/QueryClient
@@ -31,5 +49,5 @@ export default withTRPC<AppRouter>({
   /**
    * @link https://trpc.io/docs/ssr
    */
-  ssr: false,
+  ssr: true,
 })(MyApp);

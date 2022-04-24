@@ -8,7 +8,6 @@ const QuestionContent: React.FC<{ id: string }> = ({ id }) => {
   if (!data) {
     return <div>no questions found</div>;
   }
-  console.log(data);
   return (
     <div>
       <div>{data.body}</div>
