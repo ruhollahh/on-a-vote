@@ -1,9 +1,8 @@
-import * as trpc from "@trpc/server";
 import { prisma } from "@/backend/utils/prisma";
 import { tuple, z } from "zod";
+import { createRouter } from "../createRouter";
 
-export const questionRouter = trpc
-  .router()
+export const questionRouter = createRouter()
   .query("getAll", {
     async resolve() {
       return await prisma.question.findMany();

@@ -1,8 +1,8 @@
-import * as trpc from "@trpc/server";
 import { prisma } from "@/backend/utils/prisma";
 import { z } from "zod";
+import { createRouter } from "../createRouter";
 
-export const voteRouter = trpc.router().mutation("create", {
+export const voteRouter = createRouter().mutation("create", {
   input: z.object({
     questionId: z.string().cuid(),
     optionId: z.string().cuid(),

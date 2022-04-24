@@ -3,22 +3,16 @@ import type { AppRouter } from "@/backend/routes/_app";
 import { ChakraProvider } from "@chakra-ui/react";
 import { withTRPC } from "@trpc/next";
 import superjson from "superjson";
-import { SessionProvider } from "next-auth/react";
 
-function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
+function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider>
-      <SessionProvider session={session}>
-        <Component {...pageProps} />
-      </SessionProvider>
+      <Component {...pageProps} />
     </ChakraProvider>
   );
 }
 
 function getBaseUrl() {
-  if (typeof window !== "undefined") {
-    return "";
-  }
   // reference for vercel.com
   if (process.env.VERCEL_URL) {
     return `https://${process.env.VERCEL_URL}`;
@@ -39,14 +33,23 @@ export default withTRPC<AppRouter>({
      * If you want to use SSR, you need to use the server's full URL
      * @link https://trpc.io/docs/ssr
      */
+    if (typeof window !== "undefined") {
+      return {
+        url: "/api/trpc",
+        transformer: superjson,
+      };
+    }
 
     return {
+      headers() {
+        return (
+          ctx?.req?.headers ?? {
+            cookie: "",
+          }
+        );
+      },
       url: `${getBaseUrl()}/api/trpc`,
       transformer: superjson,
-      /**
-       * @link https://react-query.tanstack.com/reference/QueryClient
-       */
-      // queryClientConfig: { defaultOptions: { queries: { staleTime: 60 } } },
     };
   },
   /**
