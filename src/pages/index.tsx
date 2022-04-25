@@ -1,4 +1,5 @@
 import { trpc } from "@/backend/utils/trpc";
+import { ShowSession } from "@/components/ShowSession";
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useState } from "react";
@@ -34,10 +35,7 @@ const QuestionForm = () => {
 
 const Home: NextPage = () => {
   const { data, isLoading } = trpc.useQuery(["question.getAll"]);
-  const { data: session, isLoading: isSessionLoading } = trpc.useQuery([
-    "next-auth.getSession",
-  ]);
-  if (isLoading || isSessionLoading) {
+  if (isLoading) {
     return <div>Loading...</div>;
   }
   return (
@@ -48,13 +46,7 @@ const Home: NextPage = () => {
         </div>
       ))}
       <QuestionForm />
-      <div>
-        {session ? (
-          <p>Signed in as {session?.user?.email}</p>
-        ) : (
-          <Link href="/api/auth/signin">Sign in</Link>
-        )}
-      </div>
+      <ShowSession />
     </div>
   );
 };

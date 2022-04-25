@@ -1,4 +1,3 @@
-import { prisma } from "@/backend/utils/prisma";
 import { z } from "zod";
 import { createRouter } from "../createRouter";
 
@@ -7,8 +6,8 @@ export const voteRouter = createRouter().mutation("create", {
     questionId: z.string().cuid(),
     optionId: z.string().cuid(),
   }),
-  async resolve({ input: { questionId, optionId } }) {
-    return await prisma.vote.create({
+  async resolve({ ctx, input: { questionId, optionId } }) {
+    return await ctx.prisma.vote.create({
       data: {
         question: {
           connect: {
@@ -18,6 +17,11 @@ export const voteRouter = createRouter().mutation("create", {
         option: {
           connect: {
             id: optionId,
+          },
+        },
+        user: {
+          connect: {
+            id: ctx.session?.userId,
           },
         },
       },
