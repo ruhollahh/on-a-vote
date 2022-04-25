@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export const ShowSession = () => {
   const { data: session, isLoading: isSessionLoading } = trpc.useQuery([
-    "next-auth.getSession",
+    "auth.getSession",
   ]);
   if (isSessionLoading) {
     return <div>Loading...</div>;

@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 const QuestionContent: React.FC<{ id: string }> = ({ id }) => {
   const { data, isLoading } = trpc.useQuery(["question.getById", { id }]);
   const { data: session, isLoading: isSessionLoading } = trpc.useQuery([
-    "next-auth.getSession",
+    "auth.getSession",
   ]);
   if (isLoading || isSessionLoading) return <div>loading...</div>;
   if (!data) {

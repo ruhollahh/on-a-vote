@@ -21,9 +21,7 @@ export const createContext = async (
    * Note: If no req -> SSG is being used -> no session exists (null)
    * @link https://github.com/nextauthjs/next-auth/issues/1535
    */
-  type UserSession = (Session & { userId?: string }) | null | undefined;
-  const session =
-    opts && ((await getServerSession(opts, nextAuthOptions)) as UserSession);
+  const session = opts && (await getServerSession(opts, nextAuthOptions));
   // for API-response caching see https://trpc.io/docs/caching
   return {
     req,
