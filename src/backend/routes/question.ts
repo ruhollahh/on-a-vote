@@ -1,10 +1,19 @@
+import { createQuestionValidator } from "@/shared/createQuestionValidator";
 import { z } from "zod";
 import { createRouter } from "../createRouter";
 
 export const questionRouter = createRouter()
   .query("getAll", {
     async resolve({ ctx }) {
-      return await ctx.prisma.question.findMany();
+      return await ctx.prisma.question.findMany({
+        include: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
     },
   })
   .query("getById", {
@@ -38,18 +47,13 @@ export const questionRouter = createRouter()
     },
   })
   .mutation("create", {
-    input: z.object({
-      body: z.string().min(5).max(600),
-      options: z.array(z.string()),
-    }),
+    input: createQuestionValidator,
     async resolve({ ctx, input }) {
-      const options = input.options.map((option) => ({ body: option }));
-
       return await ctx.prisma.question.create({
         data: {
-          body: input.body,
+          body: input.question,
           options: {
-            create: options,
+            create: input.options,
           },
           user: {
             connect: {

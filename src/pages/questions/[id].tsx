@@ -41,7 +41,9 @@ const QuestionPage = () => {
   return (
     <>
       <QuestionContent id={id} />
-      <Link href="/">Home</Link>
+      <Link href="/">
+        <a>Home</a>
+      </Link>
     </>
   );
 };
