@@ -136,7 +136,7 @@ const QuestionModal = ({
                 }
               />
             </SimpleGrid>
-            {Boolean(errors.options) && (
+            {Boolean((errors?.options as FieldError | undefined)?.message) && (
               <Text pt="1" fontSize="small" color="red.400">
                 {(errors?.options as FieldError | undefined)?.message}
               </Text>
