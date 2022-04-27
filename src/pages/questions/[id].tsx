@@ -3,18 +3,18 @@ import { Box, Button, Flex, Heading, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 
 const QuestionContent: React.FC<{ id: string }> = ({ id }) => {
-  const { data: question, isFetching } = trpc.useQuery([
+  const { data: question, isLoading } = trpc.useQuery([
     "question.getById",
     { id },
   ]);
   const { isLoading: isSessionLoading } = trpc.useQuery(["auth.getSession"]);
   const client = trpc.useContext();
   const { mutate, isLoading: isVoting } = trpc.useMutation("question.vote", {
-    onSuccess() {
-      client.invalidateQueries(["question.getById", { id }]);
+    async onSuccess() {
+      await client.invalidateQueries(["question.getById", { id }]);
     },
   });
-  if (isFetching || isSessionLoading) return <div>loading...</div>;
+  if (isLoading || isSessionLoading) return <div>loading...</div>;
   if (!question) {
     return <div>no questions found</div>;
   }
