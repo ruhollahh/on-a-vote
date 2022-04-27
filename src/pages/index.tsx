@@ -118,7 +118,7 @@ const QuestionModal = ({
                         />
                       </InputRightElement>
                     </InputGroup>
-                    {Boolean(errors.options) && (
+                    {Boolean(errors?.options?.[index]?.body?.message) && (
                       <Text pt="1" fontSize="small" color="red.400">
                         {errors?.options?.[index]?.body?.message}
                       </Text>

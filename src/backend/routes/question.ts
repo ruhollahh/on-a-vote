@@ -1,6 +1,7 @@
 import { createQuestionValidator } from "@/shared/createQuestionValidator";
 import { z } from "zod";
 import { createRouter } from "../createRouter";
+import * as trpc from "@trpc/server";
 
 export const questionRouter = createRouter()
   .query("getAll", {
@@ -38,11 +39,24 @@ export const questionRouter = createRouter()
         },
       });
       if (!question) {
-        return null;
+        throw new trpc.TRPCError({ code: "NOT_FOUND" });
       }
+      let userVote = null;
+      if (ctx.session) {
+        userVote = await ctx.prisma.vote.findUnique({
+          where: {
+            questionId_userId: {
+              questionId: question.id,
+              userId: ctx.session.userId,
+            },
+          },
+        });
+      }
+      const isOwner = question.userId === ctx.session?.userId;
       return {
         ...question,
-        isOwner: question.id === ctx.session?.userId,
+        userVote,
+        isOwner,
       };
     },
   })
@@ -58,6 +72,36 @@ export const questionRouter = createRouter()
           user: {
             connect: {
               id: ctx.session?.userId,
+            },
+          },
+        },
+      });
+    },
+  })
+  .mutation("vote", {
+    input: z.object({
+      questionId: z.string().cuid(),
+      optionId: z.string().cuid(),
+    }),
+    async resolve({ input, ctx }) {
+      if (!ctx.session) {
+        throw new trpc.TRPCError({ code: "UNAUTHORIZED" });
+      }
+      return await ctx.prisma.vote.create({
+        data: {
+          question: {
+            connect: {
+              id: input.questionId,
+            },
+          },
+          user: {
+            connect: {
+              id: ctx.session.userId,
+            },
+          },
+          option: {
+            connect: {
+              id: input.optionId,
             },
           },
         },
